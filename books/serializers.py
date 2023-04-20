@@ -7,13 +7,17 @@ class DynamicFieldsSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         fields = kwargs.pop('fields', None)
-        #print()
+        print(fields)
         super().__init__(*args, **kwargs)
         if fields is not None:
             allowed = set(fields)
-            existing = set(self.fields)
+            print(allowed)
+            existing = set(self.fields) - {'id'}
+            print(existing - {'id'})
+            print(existing - allowed)
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
+            #self.fields.
         #super(DynamicFieldsSerializer, self).__init__(*args, **kwargs)
         # print(self.context)
         # fields = self.context.get('visibility')

@@ -11,3 +11,5 @@ urlpatterns = [
     path('', include(router.urls)),
     #path('client/', client_render)
 ]
+
+print(router.urls)

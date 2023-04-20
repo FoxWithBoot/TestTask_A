@@ -1,37 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <style>
-        .container {
-          display: grid;
-          gap: 20px;
+{% extends 'index.html' %}
 
-          /* ! */
-          grid-template-columns: 200px auto 100px;
-        }
-    </style>
-</head>
-<body>
-    {{data}}<br><br>
-    <table>
-    {% for row in data %}
-    <tr>
-        {{row}}<br>
-        {% for key, value in row.items %}
-        <td colspan="2">
-            {{value}}
-        </td>
-        {% endfor %}
-    </tr>
-    {% endfor %}
+{% block booktable %}
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>#</th>
+                {% for f in fields %}
+                    <th>{{f}}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in books %}
+                <tr onclick="window.location='{% url 'book-detail' row.id%}?format=html';">
+
+                    {% for key, value in row.items %}
+                        <td>
+                            {{value}}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+
     </table>
-
-    <div class="container">
-        <div visible="false">A</div>
-        <div>B</div>
-        <div>C</div>
-    </div>
-</body>
-</html>
+{% endblock %}
