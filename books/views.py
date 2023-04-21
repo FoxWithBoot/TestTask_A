@@ -13,12 +13,17 @@ class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     renderer_classes = [renderers.BrowsableAPIRenderer, renderers.TemplateHTMLRenderer, renderers.JSONRenderer]
-    permission_classes = [AllowAny]
+    #permission_classes = [AllowAny]
 
     def list(self, request, *args, **kwargs):
         response = super(BookViewSet, self).list(request, *args, **kwargs)
+
         if request.accepted_renderer.format == 'html':
-            return Response({'create_form': BookSerializer(), 'books': response.data, 'fields': self.visibility}, template_name='home.html')
+            all_fields = ProfileSerializer(Profile.objects.all(), many=True)
+            return Response({'create_form': BookSerializer(),
+                             'books': response.data,
+                             'fields': self.visibility,
+                             'all_fields': all_fields.data}, template_name='home.html')
         return response
 
     def retrieve(self, request, *args, **kwargs):

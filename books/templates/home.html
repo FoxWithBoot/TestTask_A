@@ -2,6 +2,17 @@
 
 {% block booktable %}
     {% load rest_framework %}
+    {{all_fields}}
+
+    <div>
+        {% for row in all_fields %}
+            <div>
+                <input type="checkbox" name="{{row.column_name}}" {% if row.is_visible %} checked {%endif%} onclick="change_visible({{row.id}}, '{{row.is_visible}}');">
+                <label for="{{row.column_name}}">{{row.column_name}}</label>
+            </div>
+        {% endfor %}
+    </div>
+
     <table class="table table-hover">
         <thead>
             <tr>
@@ -35,5 +46,22 @@
             <button type="submit">Добавить</button>
         </form>
     </div>
+
+    <script>
+        function change_visible(id, visible){
+            let xhr = new XMLHttpRequest();
+            xhr.open('PATCH', "/profiles/"+id+"/");
+            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            xhr.send(JSON.stringify({'is_visible':!v}));
+            xhr.onloadend = function() {
+                if (xhr.status == 200) {
+                    window.location.href = "{% url 'book-list' %}?format=html";
+                } else {
+                    alert(xhr.status+" "+xhr.response);
+                }
+             };
+        };
+    </script>
 
 {% endblock %}
