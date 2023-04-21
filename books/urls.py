@@ -10,5 +10,3 @@ router.register(r'profiles', ProfileViewSet)
 urlpatterns = [
     path('', include(router.urls)),
 ]
-
-print(router.urls)

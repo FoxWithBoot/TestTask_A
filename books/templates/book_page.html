@@ -2,14 +2,23 @@
 
 {% block booktable %}
     {% load rest_framework %}
+    <br>
     <div class="container">
-    <form class="row g-3 " id='put_form' action="#" data-method="#">
-        {% render_form serializer %}
-    </form>
+        <div class="row">
 
-        <button class="btn btn-primary" type="button" onclick="func_put()">Сохранить</button>
-        <button class="btn btn-danger" type="button" onclick="func_delete()">Удалить</button>
+            <div class="col">
+                <form class="row g-3 " id='put_form' action="#" data-method="#">
+                    {% render_form serializer %}
+                </form>
+            </div>
 
+
+        </div>
+        <br>
+        <div class="row justify-content-between">
+            <div class="col-md-auto" ><button class="btn btn-primary" type="button" onclick="func_put()">Сохранить</button></div>
+            <div class="col-md-auto"><button class="btn btn-danger" type="button" onclick="func_delete()">Удалить</button></div>
+        </div>
     </div>
 
 

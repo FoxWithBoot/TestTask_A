@@ -45,15 +45,18 @@ class BookViewSet(viewsets.ModelViewSet):
         return response
 
     def create(self, request, *args, **kwargs):
-        print(request.data)
-
         if request.accepted_renderer.format == 'html':
             serializer = self.get_serializer(data=request.data)
             response = super(BookViewSet, self).list(request, *args, **kwargs)
+            all_fields = ProfileSerializer(Profile.objects.all(), many=True)
+            self.visibility = Profile.objects.filter(is_visible=True).values_list('column_name', flat=True)
             if serializer.is_valid():
                 self.perform_create(serializer)
                 return redirect('../books?format=html')
-            return Response({'create_form': serializer, 'books': response.data, 'fields': self.visibility}, template_name='home.html')
+            return Response({'create_form': serializer,
+                             'books': response.data,
+                             'fields': self.visibility,
+                             'all_fields': all_fields.data}, template_name='home.html')
         response = super().create(request, *args, **kwargs)
         return response
 
