@@ -1,6 +1,7 @@
 {% extends 'index.html' %}
 
 {% block booktable %}
+    {% load rest_framework %}
     <table class="table table-hover">
         <thead>
             <tr>
@@ -21,7 +22,18 @@
                     {% endfor %}
                 </tr>
             {% endfor %}
+
+
         </tbody>
 
     </table>
+
+    <div class="container">
+        <form action="{% url 'book-list' %}?format=html" method="POST">
+            {% csrf_token %}
+            {% render_form create_form %}
+            <button type="submit">Добавить</button>
+        </form>
+    </div>
+
 {% endblock %}

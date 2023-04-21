@@ -18,7 +18,7 @@ class BookViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         response = super(BookViewSet, self).list(request, *args, **kwargs)
         if request.accepted_renderer.format == 'html':
-            return Response({'books': response.data, 'fields': self.visibility}, template_name='home.html')
+            return Response({'create_form': BookSerializer(), 'books': response.data, 'fields': self.visibility}, template_name='home.html')
         return response
 
     def retrieve(self, request, *args, **kwargs):
@@ -36,9 +36,21 @@ class BookViewSet(viewsets.ModelViewSet):
                 self.perform_update(serializer)
                 return Response({'serializer': serializer, 'book': instance}, template_name='book_page.html', status=status.HTTP_200_OK)
             return Response({'serializer': serializer, 'book': instance}, template_name='err_ser.html', status=status.HTTP_400_BAD_REQUEST)
-        else:
-            response = super().update(request, *args, **kwargs)
-            return response
+        response = super().update(request, *args, **kwargs)
+        return response
+
+    def create(self, request, *args, **kwargs):
+        print(request.data)
+
+        if request.accepted_renderer.format == 'html':
+            serializer = self.get_serializer(data=request.data)
+            response = super(BookViewSet, self).list(request, *args, **kwargs)
+            if serializer.is_valid():
+                self.perform_create(serializer)
+                return redirect('../books?format=html')
+            return Response({'create_form': serializer, 'books': response.data, 'fields': self.visibility}, template_name='home.html')
+        response = super().create(request, *args, **kwargs)
+        return response
 
     def get_serializer(self, *args, **kwargs):
         if self.action == 'list':

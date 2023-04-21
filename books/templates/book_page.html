@@ -8,7 +8,7 @@
     </form>
 
         <button class="btn btn-primary" type="button" onclick="func_put()">Сохранить</button>
-        <button class="btn btn-danger" type="button" onclick="">Удалить</button>
+        <button class="btn btn-danger" type="button" onclick="func_delete()">Удалить</button>
 
     </div>
 
@@ -30,7 +30,19 @@
                 }
              };
         }
-
+        function func_delete() {
+            let xhr = new XMLHttpRequest();
+            xhr.open('DELETE', "{% url 'book-detail' book.id %}");
+            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            xhr.send();
+             xhr.onloadend = function() {
+                if (xhr.status == 200) {
+                    window.location.href = "{% url 'book-list' %}?format=html";
+                } else {
+                    alert(xhr.satus+" "+xhr.response);
+                }
+             };
+        }
     </script>
 
 {% endblock %}
