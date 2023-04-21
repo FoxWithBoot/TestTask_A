@@ -1,0 +1,36 @@
+{% extends 'index.html' %}
+
+{% block booktable %}
+    {% load rest_framework %}
+    <div class="container">
+    <form class="row g-3 " id='put_form' action="#" data-method="#">
+        {% render_form serializer %}
+    </form>
+
+        <button class="btn btn-primary" type="button" onclick="func_put()">Сохранить</button>
+        <button class="btn btn-danger" type="button" onclick="">Удалить</button>
+
+    </div>
+
+
+    <script>
+        function func_put() {
+            let form = document.getElementById('put_form');
+            let formData = new FormData(form);
+
+            let xhr = new XMLHttpRequest();
+            xhr.open('PUT', "{% url 'book-detail' book.id %}?format=html");
+            xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+            xhr.send(formData);
+             xhr.onloadend = function() {
+                if (xhr.status == 200) {
+                    window.location.href = "{% url 'book-list' %}?format=html";
+                } else {
+                    form.innerHTML=xhr.response;
+                }
+             };
+        }
+
+    </script>
+
+{% endblock %}

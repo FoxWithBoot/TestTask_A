@@ -12,7 +12,7 @@
         </thead>
         <tbody>
             {% for row in books %}
-                <tr onclick="window.location='{% url 'book-detail' row.id%}?format=html';">
+                <tr onclick="window.location='{% url 'book-detail' row.id %}?format=html';">
 
                     {% for key, value in row.items %}
                         <td>
