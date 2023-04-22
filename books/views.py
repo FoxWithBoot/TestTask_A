@@ -1,7 +1,5 @@
 from django.shortcuts import redirect
-from rest_framework import viewsets, generics, mixins, renderers, status
-from rest_framework.permissions import AllowAny
-from rest_framework.renderers import HTMLFormRenderer
+from rest_framework import viewsets, mixins, renderers, status
 from rest_framework.response import Response
 
 from .models import Book, Profile
@@ -13,7 +11,6 @@ class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
     renderer_classes = [renderers.BrowsableAPIRenderer, renderers.TemplateHTMLRenderer, renderers.JSONRenderer]
-    #permission_classes = [AllowAny]
 
     def list(self, request, *args, **kwargs):
         response = super(BookViewSet, self).list(request, *args, **kwargs)
@@ -49,7 +46,6 @@ class BookViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(data=request.data)
             response = super(BookViewSet, self).list(request, *args, **kwargs)
             all_fields = ProfileSerializer(Profile.objects.all(), many=True)
-            self.visibility = Profile.objects.filter(is_visible=True).values_list('column_name', flat=True)
             if serializer.is_valid():
                 self.perform_create(serializer)
                 return redirect('../books?format=html')
@@ -58,14 +54,6 @@ class BookViewSet(viewsets.ModelViewSet):
                              'all_fields': all_fields.data}, template_name='home.html')
         response = super().create(request, *args, **kwargs)
         return response
-
-    # def get_serializer(self, *args, **kwargs):
-    #     if self.action == 'list':
-    #         self.visibility = Profile.objects.filter(is_visible=True).values_list('column_name', flat=True)
-    #         vs_ls = list(self.visibility)
-    #         vs_ls.append('id')
-    #         return BookSerializer(self.queryset.values(*vs_ls), **kwargs, fields=self.visibility)
-    #     return BookSerializer(*args, **kwargs)
 
 
 class ProfileViewSet(mixins.ListModelMixin,
