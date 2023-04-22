@@ -26,7 +26,7 @@ class BookViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, *args, **kwargs):
         response = super(BookViewSet, self).retrieve(request, *args, **kwargs)
         if request.accepted_renderer.format == 'html':
-            return Response({'serializer': BookSerializer(response.data), 'book': response.data}, template_name='book_page.html')
+            return Response({'serializer': self.get_serializer(response.data), 'book': response.data}, template_name='book_page.html')
         return response
 
     def update(self, request, *args, **kwargs):
