@@ -20,9 +20,9 @@ class BookViewSet(viewsets.ModelViewSet):
 
         if request.accepted_renderer.format == 'html':
             all_fields = ProfileSerializer(Profile.objects.all(), many=True)
+            print(type(all_fields.data))
             return Response({'create_form': BookSerializer(),
                              'books': response.data,
-                             'fields': self.visibility,
                              'all_fields': all_fields.data}, template_name='home.html')
         return response
 
@@ -55,18 +55,17 @@ class BookViewSet(viewsets.ModelViewSet):
                 return redirect('../books?format=html')
             return Response({'create_form': serializer,
                              'books': response.data,
-                             'fields': self.visibility,
                              'all_fields': all_fields.data}, template_name='home.html')
         response = super().create(request, *args, **kwargs)
         return response
 
-    def get_serializer(self, *args, **kwargs):
-        if self.action == 'list':
-            self.visibility = Profile.objects.filter(is_visible=True).values_list('column_name', flat=True)
-            vs_ls = list(self.visibility)
-            vs_ls.append('id')
-            return BookSerializer(self.queryset.values(*vs_ls), **kwargs, fields=self.visibility)
-        return BookSerializer(*args, **kwargs)
+    # def get_serializer(self, *args, **kwargs):
+    #     if self.action == 'list':
+    #         self.visibility = Profile.objects.filter(is_visible=True).values_list('column_name', flat=True)
+    #         vs_ls = list(self.visibility)
+    #         vs_ls.append('id')
+    #         return BookSerializer(self.queryset.values(*vs_ls), **kwargs, fields=self.visibility)
+    #     return BookSerializer(*args, **kwargs)
 
 
 class ProfileViewSet(mixins.ListModelMixin,

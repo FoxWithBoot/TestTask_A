@@ -12,8 +12,13 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                {% for f in fields %}
-                                    <th>{{f}}</th>
+                                {% for row in all_fields %}
+                                    <th>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="{{row.column_name}}_th" {% if row.is_visible %} checked {%endif%} onclick="change_visible({{row.id}}, '{{row.is_visible}}');">
+                                            <label class="form-check-label" for="{{row.column_name}}_th">{{row.column_name}}</label>
+                                        </div>
+                                    </th>
                                 {% endfor %}
                             </tr>
                         </thead>
@@ -23,7 +28,7 @@
 
                                     {% for key, value in row.items %}
                                         <td>
-                                            {{value}}
+                                            <div name="{{key}}_col" {% for row in all_fields %}{%if row.column_name == key%}{%if not row.is_visible%}hidden{%endif%}{%endif%}{% endfor %}>{{value}}</div>
                                         </td>
                                     {% endfor %}
                                 </tr>
@@ -40,15 +45,6 @@
 
         <br>
         <hr>
-        <div class="row align-items-center">
-            <div class="col-md-auto ">
-                {% for row in all_fields %}
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="{{row.column_name}}" {% if row.is_visible %} checked {%endif%} onclick="change_visible({{row.id}}, '{{row.is_visible}}');">
-                        <label class="form-check-label" for="{{row.column_name}}">{{row.column_name}}</label>
-                    </div>
-                {% endfor %}
-            </div>
             <div class="col">
                 <form action="{% url 'book-list' %}?format=html" method="POST">
                 {% csrf_token %}
@@ -73,7 +69,11 @@
             xhr.send(JSON.stringify({'is_visible':!v}));
             xhr.onloadend = function() {
                 if (xhr.status == 200) {
-                    window.location.href = "{% url 'book-list' %}?format=html";
+                    let field = JSON.parse(xhr.response)['column_name'];
+                    column = document.getElementsByName(field+"_col");
+                    column.forEach(function(entry) {
+                        entry.hidden = !entry.hidden;
+                    });
                 } else {
                     alert(xhr.status+" "+xhr.response);
                 }
